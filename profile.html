@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MovieMagic - My Profile</title>
+    <link rel="stylesheet" href="../static/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* Profile Page Specific Styles */
+        .profile-container {
+            max-width: 900px;
+            margin: 120px auto 40px;
+            padding: 0 20px;
+        }
+
+        .profile-header {
+            background: linear-gradient(135deg, rgba(229, 9, 20, 0.2), rgba(30, 30, 30, 0.95));
+            border-radius: 20px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(229, 9, 20, 0.3);
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #e50914, #b2070f);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 1rem;
+            box-shadow: 0 10px 30px rgba(229, 9, 20, 0.4);
+        }
+
+        .profile-name {
+            font-size: 2rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-email {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1.1rem;
+        }
+
+        .profile-info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .info-card {
+            background: rgba(30, 30, 30, 0.8);
+            padding: 1.2rem;
+            border-radius: 12px;
+            border: 1px solid rgba(229, 9, 20, 0.2);
+        }
+
+        .info-label {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.85rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .info-value {
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        /* Bookings Section */
+        .bookings-section {
+            animation: fadeInUp 0.6s ease-out 0.2s backwards;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            color: white;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .booking-card {
+            background: rgba(30, 30, 30, 0.95);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(229, 9, 20, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .booking-card:hover {
+            transform: translateX(5px);
+            border-color: #e50914;
+            box-shadow: 0 5px 20px rgba(229, 9, 20, 0.2);
+        }
+
+        .booking-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .booking-id {
+            color: #e50914;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .booking-movie {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 0.8rem;
+        }
+
+        .booking-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        .detail-item {
+            background: rgba(20, 20, 20, 0.8);
+            padding: 0.8rem;
+            border-radius: 8px;
+        }
+
+        .detail-label {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .detail-value {
+            color: white;
+            font-weight: 600;
+            margin-top: 0.3rem;
+        }
+
+        .no-bookings {
+            text-align: center;
+            padding: 3rem;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1.1rem;
+        }
+
+        .no-bookings span {
+            font-size: 3rem;
+            display: block;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .profile-container {
+                margin-top: 100px;
+            }
+            
+            .profile-header {
+                padding: 1.5rem;
+            }
+            
+            .profile-name {
+                font-size: 1.5rem;
+            }
+            
+            .booking-header {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Dropdown Menu -->
+    <div class="dropdown">
+        <button class="dropbtn">
+            <span>☰</span> Menu
+        </button>
+        <div class="dropdown-content">
+            <a href="{{ url_for('home1') }}">🏠 Home</a>
+            <a href="{{ url_for('profile') }}">👤 My Profile</a>
+            <a href="{{ url_for('about') }}">🎬 About Us</a>
+            <a href="{{ url_for('contact') }}">📞 Contact Us</a>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav id="navbar">
+        <div class="logo-container">
+            <a href="{{ url_for('home1') }}" class="brand-button">
+                MOVIEMAGIC
+            </a>
+        </div>
+        <div class="nav-right">
+            <a href="{{ url_for('home1') }}">🏠 Home</a>
+            <a href="{{ url_for('profile') }}">👤 Profile</a>
+            <a href="{{ url_for('logout') }}">🚪 Logout</a>
+        </div>
+    </nav>
+
+    <div class="profile-container">
+        <!-- Profile Header -->
+        <div class="profile-header">
+            <div class="profile-avatar">
+                {{ user.name[0]|upper }}
+            </div>
+            <h1 class="profile-name">{{ user.name }}</h1>
+            <p class="profile-email">📧 {{ user.email }}</p>
+            
+            <div class="profile-info-grid">
+                <div class="info-card">
+                    <div class="info-label">Member Since</div>
+                    <div class="info-value">{{ user.created_at.strftime('%B %d, %Y') if user.created_at else 'N/A' }}</div>
+                </div>
+                <div class="info-card">
+                    <div class="info-label">Total Bookings</div>
+                    <div class="info-value">{{ bookings|length }}</div>
+                </div>
+                <div class="info-card">
+                    <div class="info-label">Account Status</div>
+                    <div class="info-value" style="color: #4ecdc4;">✓ Active</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bookings Section -->
+        <div class="bookings-section">
+            <h2 class="section-title">🎟️ My Bookings</h2>
+            
+            {% if bookings %}
+                {% for booking in bookings %}
+                <div class="booking-card">
+                    <div class="booking-header">
+                        <span class="booking-id">#{{ booking.booking_id }}</span>
+                        <span class="detail-value" style="color: #4ecdc4;">✓ Confirmed</span>
+                    </div>
+                    <h3 class="booking-movie">🎬 {{ booking.movie_name }}</h3>
+                    <div class="booking-details">
+                        <div class="detail-item">
+                            <div class="detail-label">Date</div>
+                            <div class="detail-value">{{ booking.date }}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Time</div>
+                            <div class="detail-value">{{ booking.time }}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Theater</div>
+                            <div class="detail-value">{{ booking.theater }}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Seats</div>
+                            <div class="detail-value">{{ booking.seats }}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Amount Paid</div>
+                            <div class="detail-value" style="color: #4ecdc4;">₹{{ booking.amount_paid }}</div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="no-bookings">
+                    <span>🎫</span>
+                    <p>No bookings yet. Start exploring movies!</p>
+                    <a href="{{ url_for('home1') }}" class="book-btn" style="display: inline-block; margin-top: 1rem; text-decoration: none; width: auto; padding: 0.8rem 2rem;">
+                        Browse Movies
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="footer-content">
+            <p>&copy; 2026 MovieMagic - All Rights Reserved</p>
+            <div class="footer-links">
+                <a href="{{ url_for('about') }}">About Us</a>
+                <a href="{{ url_for('contact') }}">Contact Us</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+    </script>
+</body>
+</html>
+

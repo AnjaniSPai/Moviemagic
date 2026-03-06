@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MovieMagic - Home</title>
+    <link rel="stylesheet" href="../static/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Dropdown Menu -->
+    <div class="dropdown">
+        <button class="dropbtn">
+            <span>☰</span> Menu
+        </button>
+        <div class="dropdown-content">
+            <a href="{{ url_for('about') }}">🎬 About Us</a>
+            <a href="{{ url_for('contact') }}">📞 Contact Us</a>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav id="navbar">
+        <div class="logo-container">
+            <a href="{{ url_for('home1') }}" class="brand-button">
+                MOVIEMAGIC
+            </a>
+        </div>
+        <div class="nav-right">
+            <a href="{{ url_for('home1') }}">🏠 Home</a>
+            <a href="{{ url_for('profile') }}">👤 Profile</a>
+            <a href="{{ url_for('logout') }}">🚪 Logout</a>
+        </div>
+    </nav>
+
+    <!-- Header Section -->
+    <div class="header-section">
+        <div class="welcome-container">
+            <div class="welcome-message">
+                <h1>Welcome to MovieMagic</h1>
+                <p>Experience the magic of cinema. Book your favorite movies in premium theaters near you.</p>
+            </div>
+            
+            <!-- Search Container -->
+            <div class="search-container">
+                <form id="searchForm" class="search-box">
+                    <select id="language" aria-label="Select movie language">
+                        <option value="Telugu">🎥 Telugu</option>
+                        <option value="Hindi">🎬 Hindi</option>
+                        <option value="Kannada">⭐ Kannada</option>
+                        <option value="English">🌟 English</option>
+                        <option value="Tamil">🔥 Tamil</option>
+                    </select>
+                    <input type="text" id="city" placeholder="Enter City (e.g., Ballari)" aria-label="Enter city name" required>
+                    <button type="submit">Search Movies</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search Results Section -->
+    <div class="search-results-section" id="searchResultsSection" style="display: none;">
+        <div class="container">
+            <h2>🎬 Search Results</h2>
+            <div id="movieResults" class="search-results-grid"></div>
+        </div>
+    </div>
+
+    <!-- Trending Movies Section -->
+    <div class="movies-section">
+        <div class="trending">
+            <h2>🔥 Top Trending Movies</h2>
+            <div class="movie-grid stagger-animation">
+                <div class="movie-card">
+                    <img src="../static/images/court.jpg" class="movie-poster" alt="Court">
+                    <div class="movie-info">
+                        <h3 class="movie-title">Court</h3>
+                        <p class="movie-genre">Action, Drama</p>
+                    </div>
+                </div>
+                
+                <div class="movie-card">
+                    <img src="../static/images/mad.jpg" class="movie-poster" alt="Mad^2">
+                    <div class="movie-info">
+                        <h3 class="movie-title">Mad^2</h3>
+                        <p class="movie-genre">Action, Historical</p>
+                    </div>
+                </div>
+                
+                <div class="movie-card">
+                    <img src="../static/images/robinhood.jpg" class="movie-poster" alt="Robinhood">
+                    <div class="movie-info">
+                        <h3 class="movie-title">Robinhood</h3>
+                        <p class="movie-genre">Action, Thriller</p>
+                    </div>
+                </div>
+
+                <div class="movie-card">
+                    <img src="../static/images/presence.jpg" class="movie-poster" alt="Presence">
+                    <div class="movie-info">
+                        <h3 class="movie-title">Presence</h3>
+                        <p class="movie-genre">Action, Thriller</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Theater Modal -->
+    <div id="theaterModal" class="modal">
+        <div class="modal-content">
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="footer-content">
+            <p>&copy; 2026 MovieMagic - All Rights Reserved</p>
+            <div class="footer-links">
+                <a href="{{ url_for('about') }}">About Us</a>
+                <a href="{{ url_for('contact') }}">Contact Us</a>
+                <a href="#">Privacy Policy</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../static/js/movies1.js"></script>
+    
+    <script>
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Search functionality
+        document.getElementById('searchForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const language = document.getElementById('language').value;
+            const city = document.getElementById('city').value.toLowerCase();
+            const movieResults = document.getElementById('movieResults');
+            const searchResultsSection = document.getElementById('searchResultsSection');
+
+            movieResults.innerHTML = "";
+            searchResultsSection.style.display = "none";
+
+            if (typeof movies === "undefined" || !Array.isArray(movies)) {
+                console.error("Error: 'movies' is not loaded.");
+                return;
+            }
+
+            const filteredMovies = movies.filter(movie => 
+                movie.languages.includes(language) && 
+                movie.locations.some(loc => loc.city.toLowerCase() === city)
+            );
+
+            if (filteredMovies.length > 0) {
+                searchResultsSection.style.display = "block";
+
+                filteredMovies.forEach((movie, index) => {
+                    const movieCard = document.createElement('div');
+                    movieCard.classList.add('search-result-card');
+                    movieCard.style.animationDelay = `${index * 0.1}s`;
+
+                    const cityTheaters = movie.locations.filter(loc => loc.city.toLowerCase() === city);
+
+                    movieCard.innerHTML = `
+                        <div class="result-poster">
+                            <img src="${movie.poster}" alt="${movie.name} poster">
+                        </div>
+                        <div class="result-details">
+                            <h3 class="result-title">${movie.name}</h3>
+                            <p class="result-description">${movie.description}</p>
+                            <div class="result-info">
+                                <div class="result-languages">
+                                    <strong>Languages:</strong> ${movie.languages.join(", ")}
+                                </div>
+                                <div class="price-tag">₹${movie.price}</div>
+                            </div>
+                            
+                            <div class="theater-selection">
+                                <label for="theater-${movie.id}"><strong>Select Theater:</strong></label>
+                                <select id="theater-${movie.id}" class="theater-dropdown">
+                                    <option value="">Choose a theater</option>
+                                    ${cityTheaters.map((location, idx) => 
+                                        `<option value="${idx}">${location.theater} - ${location.address}</option>`
+                                    ).join('')}
+                                </select>
+                            </div>
+                            
+                            <button id="book-btn-${movie.id}" class="book-btn" disabled 
+                                onclick="bookMovie('${movie.name.replace(/'/g, "\\'").replace(/"/g, '\\"')}', ${movie.id}, ${movie.price})">
+                                Book Now 🎟️
+                            </button>
+                        </div>
+                    `;
+                    movieResults.appendChild(movieCard);
+
+                    const theaterSelect = document.getElementById(`theater-${movie.id}`);
+                    if (theaterSelect) {
+                        theaterSelect.addEventListener('change', function() {
+                            const bookBtn = document.getElementById(`book-btn-${movie.id}`);
+                            bookBtn.disabled = !this.value;
+                        });
+                    }
+                });
+            } else {
+                searchResultsSection.style.display = "block";
+                movieResults.innerHTML = `<p class="no-results">No movies found for ${language} in ${city.charAt(0).toUpperCase() + city.slice(1)} 😔</p>`;
+            }
+
+            searchResultsSection.scrollIntoView({ behavior: 'smooth' });
+        });
+
+        // Book movie function
+        function bookMovie(movieTitle, movieId, price) {
+            const theaterSelect = document.getElementById(`theater-${movieId}`);
+            if (!theaterSelect || !theaterSelect.value) {
+                alert("Please select a theater before proceeding.");
+                return;
+            }
+
+            const theaterIndex = theaterSelect.value;
+            const movie = movies.find(m => m.id === movieId);
+            const city = document.getElementById('city').value.toLowerCase();
+            const cityTheaters = movie.locations.filter(loc => loc.city.toLowerCase() === city);
+            const theater = cityTheaters[theaterIndex];
+
+            if (!theater) {
+                alert("Theater not found");
+                return;
+            }
+
+            const params = new URLSearchParams({
+                movie: movieTitle,
+                theater: theater.theater,
+                address: theater.address,
+                price: price
+            });
+
+            window.location.href = `/b1?${params.toString()}`;
+        }
+
+        // Modal close functionality
+        const modal = document.getElementById('theaterModal');
+        window.addEventListener('click', (event) => {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
+

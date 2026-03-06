@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MovieMagic - Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: #0f0f1a;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Animated Background */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(ellipse at 20% 20%, rgba(99, 102, 241, 0.2) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(236, 72, 153, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(139, 92, 246, 0.1) 0%, transparent 60%),
+                linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 50%, #16213e 100%);
+            z-index: -1;
+        }
+
+        /* Floating Orbs */
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(60px);
+            animation: float 10s infinite;
+        }
+
+        .orb-1 {
+            width: 300px;
+            height: 300px;
+            background: #6366f1;
+            top: -100px;
+            left: -100px;
+            opacity: 0.3;
+        }
+
+        .orb-2 {
+            width: 250px;
+            height: 250px;
+            background: #ec4899;
+            bottom: -80px;
+            right: -80px;
+            opacity: 0.25;
+            animation-delay: 5s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-20px) scale(1.05); }
+        }
+
+        /* Auth Card */
+        .auth-card {
+            background: rgba(26, 26, 46, 0.95);
+            padding: 3rem;
+            border-radius: 24px;
+            width: 420px;
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            animation: slideUp 0.8s ease-out;
+            box-shadow: 
+                0 20px 60px rgba(0, 0, 0, 0.5),
+                0 0 40px rgba(99, 102, 241, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .auth-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #6366f1, #8b5cf6, #ec4899);
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h2 {
+            text-align: center;
+            color: white;
+            margin-bottom: 0.5rem;
+            font-size: 2rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+        }
+
+        /* Form Group */
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        input {
+            width: 100%;
+            padding: 1rem 1.2rem;
+            border: 2px solid rgba(99, 102, 241, 0.2);
+            border-radius: 12px;
+            box-sizing: border-box;
+            background: rgba(15, 15, 26, 0.8);
+            color: white;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+            background: rgba(22, 33, 62, 0.9);
+        }
+
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        /* Validation */
+        .input-icon {
+            position: absolute;
+            right: 15px;
+            top: 42px;
+            font-size: 1.2rem;
+        }
+
+        .validation-icon {
+            display: none;
+        }
+
+        .valid .validation-icon.check { display: block; color: #10b981; }
+        .invalid .validation-icon.cross { display: block; color: #ef4444; }
+
+        .validation-message {
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+
+        .form-group.valid .validation-message { display: block; color: #10b981; }
+        .form-group.invalid .validation-message { display: block; color: #ef4444; }
+
+        /* Password Toggle */
+        .password-wrapper {
+            position: relative;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1.1rem;
+            transition: color 0.3s;
+        }
+
+        .toggle-password:hover {
+            color: #6366f1;
+        }
+
+        /* Submit Button */
+        button {
+            width: 100%;
+            padding: 1.1rem;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            margin-top: 1rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: 0.6s;
+        }
+
+        button:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.5);
+            background: linear-gradient(135deg, #818cf8, #a78bfa);
+        }
+
+        button:hover::before {
+            left: 100%;
+        }
+
+        button:disabled {
+            background: #374151;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        /* Switch Auth */
+        .switch-auth {
+            text-align: center;
+            margin-top: 2rem;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.95rem;
+        }
+
+        a {
+            color: #6366f1;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        a:hover {
+            color: #818cf8;
+            text-shadow: 0 0 15px rgba(99, 102, 241, 0.5);
+        }
+
+        /* Back to Home */
+        .back-home {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            z-index: 10;
+        }
+
+        .back-home:hover {
+            color: #6366f1;
+            transform: translateX(-5px);
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .auth-card {
+                width: 90%;
+                padding: 2rem;
+            }
+            
+            h2 {
+                font-size: 1.6rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating Orbs -->
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+
+    <!-- Back to Home -->
+    <a href="{{ url_for('index') }}" class="back-home">
+        ← Back to Home
+    </a>
+
+    <div class="auth-card">
+        <h2>Welcome Back</h2>
+        <p class="subtitle">Sign in to continue to MovieMagic</p>
+        
+        <form id="loginForm" action="{{ url_for('login') }}" method="POST">
+            <!-- Email Field -->
+            <div class="form-group" id="emailGroup">
+                <label for="email">📧 Email Address</label>
+                <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                <span class="input-icon">
+                    <span class="validation-icon check">✓</span>
+                    <span class="validation-icon cross">✗</span>
+                </span>
+                <div class="validation-message"></div>
+            </div>
+
+            <!-- Password Field -->
+            <div class="form-group" id="passwordGroup">
+                <label for="password">🔒 Password</label>
+                <div class="password-wrapper">
+                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                    <span class="toggle-password" onclick="togglePassword()">👁️</span>
+                </div>
+                <div class="validation-message"></div>
+            </div>
+
+            <button type="submit" id="submitBtn" disabled>Sign In</button>
+        </form>
+
+        <div class="switch-auth">
+            <p>New user? <a href="{{ url_for('signup') }}">Create Account</a></p>
+        </div>
+    </div>
+
+    <script>
+        // Email validation regex
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const emailGroup = document.getElementById('emailGroup');
+        const passwordGroup = document.getElementById('passwordGroup');
+        const submitBtn = document.getElementById('submitBtn');
+
+        // Email validation
+        emailInput.addEventListener('input', validateEmail);
+        emailInput.addEventListener('blur', validateEmail);
+
+        function validateEmail() {
+            const email = emailInput.value.trim();
+            const validationMessage = emailGroup.querySelector('.validation-message');
+            
+            if (email === '') {
+                emailGroup.classList.remove('valid', 'invalid');
+                validationMessage.textContent = '';
+            } else if (emailRegex.test(email)) {
+                emailGroup.classList.remove('invalid');
+                emailGroup.classList.add('valid');
+                validationMessage.textContent = '✓ Valid email format';
+            } else {
+                emailGroup.classList.remove('valid');
+                emailGroup.classList.add('invalid');
+                validationMessage.textContent = '✗ Please enter a valid email address';
+            }
+            
+            checkFormValidity();
+        }
+
+        // Password validation
+        passwordInput.addEventListener('input', validatePassword);
+        passwordInput.addEventListener('blur', validatePassword);
+
+        function validatePassword() {
+            const password = passwordInput.value;
+            const validationMessage = passwordGroup.querySelector('.validation-message');
+            
+            if (password === '') {
+                passwordGroup.classList.remove('valid', 'invalid');
+                validationMessage.textContent = '';
+            } else if (password.length >= 6) {
+                passwordGroup.classList.remove('invalid');
+                passwordGroup.classList.add('valid');
+                validationMessage.textContent = '✓ Password accepted';
+            } else {
+                passwordGroup.classList.remove('valid');
+                passwordGroup.classList.add('invalid');
+                validationMessage.textContent = '✗ Password must be at least 6 characters';
+            }
+            
+            checkFormValidity();
+        }
+
+        // Check form validity
+        function checkFormValidity() {
+            const isEmailValid = emailRegex.test(emailInput.value.trim());
+            const isPasswordValid = passwordInput.value.length >= 6;
+            
+            submitBtn.disabled = !(isEmailValid && isPasswordValid);
+        }
+
+        // Toggle password visibility
+        function togglePassword() {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+        }
+
+        // Form submission
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            const isEmailValid = emailRegex.test(emailInput.value.trim());
+            const isPasswordValid = passwordInput.value.length >= 6;
+            
+            if (!isEmailValid || !isPasswordValid) {
+                e.preventDefault();
+                alert('Please fill in all fields correctly.');
+            }
+        });
+    </script>
+</body>
+</html>
+
