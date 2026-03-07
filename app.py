@@ -320,6 +320,8 @@
 #     port = int(os.environ.get('PORT', 5000))
 #     app.run(host='0.0.0.0', port=port, debug=True)
 
+from xml.dom.minidom import Attr
+
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
@@ -335,8 +337,8 @@ app.secret_key = 'moviemagic_secret_key_2024'
 # AWS CONFIGURATION - MATCH YOUR CONSOLE
 # ============================================
 # Ensure you attach an IAM Role to your EC2 with DynamoDB & SNS access [cite: 846, 847]
-AWS_REGION = "ap-south-1"  # Update to your region [cite: 172]
-SNS_TOPIC_ARN = "arn:aws:sns:ap-south-1:605134430972:MovieTicketNotifications" # Paste your ARN here [cite: 174]
+AWS_REGION = "us-east-1"  # Update to your region [cite: 172]
+SNS_TOPIC_ARN = "arn:aws:sns:us-east-1:651200362301:MovieTicketNotifications:e05bbf0b-8f5e-41a6-9f5d-bf974f9e6f02" # Paste your ARN here [cite: 174]
 
 # Initialize AWS resources [cite: 201, 202]
 dynamodb = boto3.resource('dynamodb', region_name=AWS_REGION)
@@ -451,19 +453,43 @@ def home1():
         return redirect(url_for('login'))
     return render_template('home1.html')
 
+# @app.route('/profile')
 @app.route('/profile')
 def profile():
     if 'user' not in session:
         return redirect(url_for('login'))
-    
     try:
-        # Note: In DynamoDB, fetching all user bookings typically requires a Scan or GSI [cite: 511]
-        # For simplicity in testing, we fetch current session user info
-        response = users_table.get_item(Key={'email': session['user']['email']})
+        email = session['user']['email']
+        response = users_table.get_item(Key={'email': email})
         user = response.get('Item')
-        return render_template('profile.html', user=user, bookings=[]) 
-    except:
-        return render_template('profile.html', user=None, bookings=[])
+        
+        if user:
+            # Pass the user data directly. 
+            # If you had date formatting here, remove it to stop the 'strftime' error.
+            booking_response = bookings_table.scan(
+            FilterExpression=Attr('email').eq(email))
+            user_bookings = booking_response.get('Items', [])
+            return render_template('profile.html', user=user, bookings=user_bookings)
+        else:
+            session.clear()
+            return redirect(url_for('login'))
+    
+            
+    except Exception as e:
+        print(f"Profile Error: {e}") # This is where the 'strftime' error was caught
+        return redirect(url_for('home1'))
+# def profile():
+#     if 'user' not in session:
+#         return redirect(url_for('login'))
+    
+#     try:
+#         # Note: In DynamoDB, fetching all user bookings typically requires a Scan or GSI [cite: 511]
+#         # For simplicity in testing, we fetch current session user info
+#         response = users_table.get_item(Key={'email': session['user']['email']})
+#         user = response.get('Item')
+#         return render_template('profile.html', user=user, bookings=[]) 
+#     except:
+#         return render_template('profile.html', user=None, bookings=[])
 
 @app.route('/about')
 def about():
