@@ -333,6 +333,17 @@ from botocore.exceptions import ClientError
 app = Flask(__name__)
 app.secret_key = 'moviemagic_secret_key_2024'
 
+from decimal import Decimal
+
+def replace_decimals(obj):
+    if isinstance(obj, list):
+        return [replace_decimals(i) for i in obj]
+    elif isinstance(obj, dict):
+        return {k: replace_decimals(v) for k, v in obj.items()}
+    elif isinstance(obj, Decimal):
+        return int(obj) if obj % 1 == 0 else float(obj)
+    return obj
+
 # ============================================
 # AWS CONFIGURATION - MATCH YOUR CONSOLE
 # ============================================
@@ -467,8 +478,9 @@ def profile():
             # Pass the user data directly. 
             # If you had date formatting here, remove it to stop the 'strftime' error.
             booking_response = bookings_table.scan(
-            FilterExpression=Attr('email').eq(email))
-            user_bookings = booking_response.get('Items', [])
+                FilterExpression=Attr('booked_by').eq(email))
+            # FilterExpression=Attr('email').eq(email))
+            user_bookings = replace_decimals(booking_response.get('Items', []))
             return render_template('profile.html', user=user, bookings=user_bookings)
         else:
             session.clear()
@@ -529,7 +541,7 @@ def tickets():
             'booked_by': user_email,
             'user_name': session['user']['name'],
             'seats': request.form.get('seats'),
-            'amount_paid': request.form.get('amount'),
+            'amount_paid': str(request.form.get('amount')),  # DynamoDB expects strings for numbers
             'booking_time': datetime.now().isoformat()
         }
         
