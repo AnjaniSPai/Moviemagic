@@ -349,7 +349,7 @@ def replace_decimals(obj):
 # ============================================
 # Ensure you attach an IAM Role to your EC2 with DynamoDB & SNS access [cite: 846, 847]
 AWS_REGION = "us-east-1"  # Update to your region [cite: 172]
-SNS_TOPIC_ARN = "arn:aws:sns:us-east-1:651200362301:MovieTicketNotifications:e05bbf0b-8f5e-41a6-9f5d-bf974f9e6f02" # Paste your ARN here [cite: 174]
+SNS_TOPIC_ARN = "arn:aws:sns:us-east-1:651200362301:MovieTicketNotifications:e452f8d2-01ff-40d7-93b4-e8c3602f2fd7" # Paste your ARN here [cite: 174]
 
 # Initialize AWS resources [cite: 201, 202]
 dynamodb = boto3.resource('dynamodb', region_name=AWS_REGION)
