@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MovieMagic - My Profile</title>
-    <link rel="stylesheet" href="../static/css/style.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         /* Profile Page Specific Styles */
@@ -236,7 +236,7 @@
             <div class="profile-info-grid">
                 <div class="info-card">
                     <div class="info-label">Member Since</div>
-                    <div class="info-value">{{ user.created_at.strftime('%B %d, %Y') if user.created_at else 'N/A' }}</div>
+                    <div class="info-value">{{ user.created_at[:10] if user.created_at else 'N/A' }}</div>  <!--code updated here-->
                 </div>
                 <div class="info-card">
                     <div class="info-label">Total Bookings</div>
