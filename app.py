@@ -329,7 +329,7 @@ import uuid
 import os
 import boto3
 from botocore.exceptions import ClientError
-
+from boto3.dynamodb.conditions import Attr
 app = Flask(__name__)
 app.secret_key = 'moviemagic_secret_key_2024'
 
